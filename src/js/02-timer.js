@@ -2,7 +2,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const refs = {
-  //   input: document.querySelector('#datetime-picker'),
+  input: document.querySelector('#datetime-picker'),
   btnStart: document.querySelector('button[data-start]'),
   days: document.querySelector('span[data-days]'),
   hours: document.querySelector('span[data-hours]'),
@@ -16,6 +16,9 @@ const refs = {
 
 refs.btnStart.addEventListener('click', startTimer);
 
+// let startTime = 0;
+// let futuretTime = 0;
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -23,39 +26,45 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     const startTime = options.defaultDate;
-    console.log('start:', startTime);
-    const currentTime = selectedDates[0];
-    console.log('end:', currentTime);
-    // console.log(selectedDates[0]);
-    // console.log(Date.now(selectedDates[0]));
+    // console.log('start:', startTime);
+    const futuretTime = selectedDates[0];
+    console.log(futuretTime);
+    // console.log('end:', futuretTime);
+    const deltatTime = futuretTime - startTime;
+    return futuretTime;
+    console.log(deltatTime);
   },
 };
 
+// console.log(options.onClose);
+
 flatpickr('#datetime-picker', options);
 
+// console.log(options.onClose);
+// const deltatTime = futuretTime - startTime;
+// console.log(fff);
 // console.log(options.defaultDate);
+
+// const futerData = new Date();
+// const futuretTime = futerData.getTime(refs.input.value);
+// console.log(futuretTime);
 
 function startTimer() {
   console.log('fff');
-  const timer = {
-    start() {
-      const startTime = Date.now();
-
-      setInterval(() => {
-        const currentTime = Date.now();
-        //   console.log('начальное время:', startTime);
-        //   console.log('текущее время:', currentTime);
-        const deltatTime = currentTime - startTime;
-        // const timeComponents = convertMs(deltatTime);
-        const { days, hours, minutes, seconds } = convertMs(deltatTime);
-        // console.log(timeComponents);
-        // console.log(`${days}:${hours}:${minutes}:${seconds}`);
-        renderTime(days, hours, minutes, seconds);
-      }, 1000);
-    },
-  };
-
-  timer.start();
+  const startTime = Date.now();
+  setInterval(() => {
+    // const futuretTime = Date.now();
+    const futuretTime = refs.input.value;
+    console.log('начальное время:', startTime);
+    console.log('будущее время:', futuretTime);
+    const deltatTime = startTime - futuretTime;
+    console.log(deltatTime);
+    // const timeComponents = convertMs(deltatTime);
+    const { days, hours, minutes, seconds } = convertMs(deltatTime);
+    // console.log(timeComponents);
+    // console.log(`${days}:${hours}:${minutes}:${seconds}`);
+    renderTime(days, hours, minutes, seconds);
+  }, 1000);
 }
 
 function convertMs(ms) {
