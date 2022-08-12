@@ -1,4 +1,5 @@
 import flatpickr from 'flatpickr';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const refs = {
@@ -9,15 +10,10 @@ const refs = {
   minutes: document.querySelector('span[data-minutes]'),
   seconds: document.querySelector('span[data-seconds]'),
 };
-// refs.days.textContent = 20;
-// refs.hours.textContent = 10;
-// refs.minutes.textContent = 5;
-// refs.seconds.textContent = 12;
 
-refs.btnStart.addEventListener('click', startTimer);
-
-// let startTime = 0;
-// let futuretTime = 0;
+refs.btnStart.addEventListener('click', countdownStart);
+refs.btnStart.disabled = true;
+let timerId = null;
 
 const options = {
   enableTime: true,
@@ -25,44 +21,33 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    const startTime = options.defaultDate;
-    // console.log('start:', startTime);
-    const futuretTime = selectedDates[0];
-    console.log(futuretTime);
-    // console.log('end:', futuretTime);
-    const deltatTime = futuretTime - startTime;
-    return futuretTime;
-    console.log(deltatTime);
+    const startTime = options.defaultDate.getTime();
+    console.log('start:', startTime);
+    const futuretTime = selectedDates[0].getTime();
+    console.log('future:', futuretTime);
+    if (futuretTime > startTime) {
+      Notify.success('Click Start', {
+        timeout: 3000,
+      });
+      refs.btnStart.disabled = false;
+    } else Notify.failure('Please choose a date in the future');
   },
 };
 
-// console.log(options.onClose);
-
 flatpickr('#datetime-picker', options);
 
-// console.log(options.onClose);
-// const deltatTime = futuretTime - startTime;
-// console.log(fff);
-// console.log(options.defaultDate);
+function countdownStart() {
+  const futureTime = Date.parse(refs.input.value);
 
-// const futerData = new Date();
-// const futuretTime = futerData.getTime(refs.input.value);
-// console.log(futuretTime);
+  timerId = setInterval(() => {
+    const differense = futureTime - Date.now();
+    if (differense <= 0) {
+      clearInterval(timerId);
+      return;
+    }
+    console.log('fff');
+    const { days, hours, minutes, seconds } = convertMs(differense);
 
-function startTimer() {
-  console.log('fff');
-  const startTime = Date.now();
-  setInterval(() => {
-    // const futuretTime = Date.now();
-    const futuretTime = refs.input.value;
-    console.log('начальное время:', startTime);
-    console.log('будущее время:', futuretTime);
-    const deltatTime = startTime - futuretTime;
-    console.log(deltatTime);
-    // const timeComponents = convertMs(deltatTime);
-    const { days, hours, minutes, seconds } = convertMs(deltatTime);
-    // console.log(timeComponents);
-    // console.log(`${days}:${hours}:${minutes}:${seconds}`);
     renderTime(days, hours, minutes, seconds);
   }, 1000);
 }
@@ -75,13 +60,15 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = pad(Math.floor(ms / day));
+  const days = addLeadingZero(Math.floor(ms / day));
   // Remaining hours
-  const hours = pad(Math.floor((ms % day) / hour));
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
+  const seconds = addLeadingZero(
+    Math.floor((((ms % day) % hour) % minute) / second)
+  );
 
   return { days, hours, minutes, seconds };
 }
@@ -93,6 +80,6 @@ function renderTime(days, hours, minutes, seconds) {
   refs.seconds.textContent = seconds;
 }
 
-function pad(value) {
+function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
