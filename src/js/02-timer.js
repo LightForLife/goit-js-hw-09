@@ -22,9 +22,7 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     const startTime = options.defaultDate.getTime();
-    console.log('start:', startTime);
     const futuretTime = selectedDates[0].getTime();
-    console.log('future:', futuretTime);
     if (futuretTime > startTime) {
       Notify.success('Click Start', {
         timeout: 3000,
@@ -45,7 +43,7 @@ function countdownStart() {
       clearInterval(timerId);
       return;
     }
-    console.log('fff');
+
     const { days, hours, minutes, seconds } = convertMs(differense);
 
     renderTime(days, hours, minutes, seconds);
