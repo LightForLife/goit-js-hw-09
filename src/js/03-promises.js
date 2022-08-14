@@ -19,6 +19,7 @@ function onCreatepromise(event) {
     return Notify.failure(`Введите положительные числа и amount > 0 `);
   }
   intervalId = setInterval(() => {
+    position += 1;
     amount -= 1;
     console.log(amount);
     if (amount === 0) {
@@ -31,9 +32,9 @@ function onCreatepromise(event) {
       .catch(({ position, delay }) => {
         Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
       });
-    position += 1;
     delay += step;
   }, 0);
+  position = 0;
 }
 
 function createPromise(position, delay) {
