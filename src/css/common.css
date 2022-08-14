@@ -39,3 +39,18 @@ img {
   font-size: 12px;
   font-weight: bolder;
 }
+
+.form button {
+  height: 25px;
+}
+
+.form label {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.form input {
+  display: block;
+  height: 25px;
+}

@@ -1,53 +1,50 @@
-// function createPromise(position, delay) {
-//   const shouldResolve = Math.random() > 0.3;
-//   if (shouldResolve) {
-//     // Fulfill
-//   } else {
-//     // Reject
-//   }
-// }
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-// createPromise(2, 1500)
-//   .then(({ position, delay }) => {
-//     console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-//   })
-//   .catch(({ position, delay }) => {
-//     console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-//   });
+const refs = {
+  form: document.querySelector('form'),
+};
 
-const promise = new Promise((resolve, reject) => {
-  const canFulfill = Math.random() > 0.5;
-  setTimeout(() => {
-    if (canFulfill) {
-      resolve('(Промис успешный, результат fulfilled)');
+refs.form.addEventListener('submit', onCreatepromise);
+
+let intervalId = null;
+let position = 1;
+
+function onCreatepromise(event) {
+  event.preventDefault();
+  let delay = Number(refs.form.delay.value);
+  let step = Number(refs.form.step.value);
+  let amount = Number(refs.form.amount.value);
+
+  if (delay < 0 || step < 0 || amount <= 0) {
+    return Notify.failure(`Введите положительные числа и amount > 0 `);
+  }
+  intervalId = setInterval(() => {
+    amount -= 1;
+    console.log(amount);
+    if (amount === 0) {
+      clearInterval(intervalId);
     }
+    createPromise(position, delay)
+      .then(({ position, delay }) => {
+        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+      });
+    position += 1;
+    delay += step;
+  }, 0);
+}
 
-    reject('(Промис с ошибкой rejected)');
-  }, 1500);
-});
-
-// promise.then(
-//   result => {
-//     console.log(`✅${result}`);
-//   },
-//   error => {
-//     console.log(`❌${error}`);
-//   }
-// );
-
-//цепочка промисов
-
-promise
-  .then(result => {
-    console.log(result);
-    return 5;
-  })
-  .then(x => {
-    console.log(x);
-    return 10;
-  })
-  .then(y => {
-    console.log(y);
-  })
-  .catch(error => console.log(error))
-  .finally(() => console.log('All result'));
+function createPromise(position, delay) {
+  return new Promise((resolve, reject) => {
+    const shouldResolve = Math.random() > 0.3;
+    setTimeout(() => {
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay);
+  });
+}

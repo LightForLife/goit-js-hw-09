@@ -39,9 +39,8 @@ function countdownStart() {
 
   timerId = setInterval(() => {
     const differense = futureTime - Date.now();
-    if (differense <= 0) {
+    if (differense <= 1000) {
       clearInterval(timerId);
-      return;
     }
 
     const { days, hours, minutes, seconds } = convertMs(differense);
