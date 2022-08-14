@@ -1,2 +1,0 @@
-new Promise((function(n,o){var e=Math.random()>.5;setTimeout((function(){e&&n("(Промис успешный, результат fulfilled)"),o("(Промис с ошибкой rejected)")}),1500)})).then((function(n){return console.log(n),5})).then((function(n){return console.log(n),10})).then((function(n){console.log(n)})).catch((function(n){return console.log(n)})).finally((function(){return console.log("All result")}));
-//# sourceMappingURL=03-promises.53cc3105.js.map
