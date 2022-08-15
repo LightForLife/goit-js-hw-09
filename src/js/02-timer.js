@@ -23,18 +23,25 @@ const options = {
   onClose(selectedDates) {
     const startTime = options.defaultDate.getTime();
     const futuretTime = selectedDates[0].getTime();
-    if (futuretTime > startTime) {
-      Notify.success('Click Start', {
-        timeout: 3000,
-      });
-      refs.btnStart.disabled = false;
-    } else Notify.failure('Please choose a date in the future');
+    const delta = futuretTime - startTime;
+
+    if (delta <= 0) {
+      refs.btnStart.disabled = true;
+      Notify.failure('Please choose a date in the future');
+    } else
+      (refs.btnStart.disabled = false),
+        Notify.success('Click Start', {
+          timeout: 3000,
+        });
   },
 };
 
 flatpickr('#datetime-picker', options);
 
 function countdownStart() {
+  refs.btnStart.disabled = true;
+  refs.input.disabled = true;
+
   const futureTime = Date.parse(refs.input.value);
 
   timerId = setInterval(() => {

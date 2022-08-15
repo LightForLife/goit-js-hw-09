@@ -6,7 +6,6 @@ const refs = {
 
 refs.form.addEventListener('submit', onCreatepromise);
 
-let intervalId = null;
 let position = 1;
 
 function onCreatepromise(event) {
@@ -18,13 +17,8 @@ function onCreatepromise(event) {
   if (delay < 0 || step < 0 || amount <= 0) {
     return Notify.failure(`Введите положительные числа и amount > 0 `);
   }
-  intervalId = setInterval(() => {
-    position += 1;
-    amount -= 1;
-    console.log(amount);
-    if (amount === 0) {
-      clearInterval(intervalId);
-    }
+
+  for (let i = 1; i <= amount; i += 1) {
     createPromise(position, delay)
       .then(({ position, delay }) => {
         Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
@@ -32,14 +26,16 @@ function onCreatepromise(event) {
       .catch(({ position, delay }) => {
         Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
       });
+    position += 1;
     delay += step;
-  }, 0);
-  position = 0;
+  }
 }
 
 function createPromise(position, delay) {
+  console.log(delay);
   return new Promise((resolve, reject) => {
     const shouldResolve = Math.random() > 0.3;
+
     setTimeout(() => {
       if (shouldResolve) {
         resolve({ position, delay });
