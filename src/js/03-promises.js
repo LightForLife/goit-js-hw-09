@@ -29,6 +29,7 @@ function onCreatepromise(event) {
     position += 1;
     delay += step;
   }
+  position = 1;
 }
 
 function createPromise(position, delay) {
